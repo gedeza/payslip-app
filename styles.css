@@ -1,128 +1,257 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .dashboard {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
     max-width: 800px;
-    margin: 0 auto;
 }
 
-h1,
-h2 {
-    color: #333;
+h1 {
+    color: #2c3e50;
     text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
     margin-bottom: 5px;
-    color: #666;
+    color: #34495e;
+    font-weight: bold;
 }
 
 input[type="text"],
-input[type="date"],
 input[type="number"],
-input[type="checkbox"] {
+input[type="date"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
+    padding: 12px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus,
-input[type="date"]:focus,
-input[type="number"]:focus {
-    border-color: #4CAF50;
+input[type="number"]:focus,
+input[type="date"]:focus {
+    border-color: #3498db;
     outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
 }
 
 button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
+    background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
 }
 
 #payslip-content {
-    margin-top: 20px;
+    margin-top: 30px;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#payslip-content h1,
-#payslip-content h2,
-#payslip-content h3 {
-    margin: 0;
-    padding: 0;
+/* Payslip Styles */
+.payslip {
+    font-family: 'Roboto', Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-#payslip-content p {
-    margin: 5px 0;
-}
-
-.payslip-preview {
-    background-color: white;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.payslip-header,
-.payslip-footer {
+.payslip-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #3498db;
 }
 
-.payslip-body {
+.payslip-header h1 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.company-info {
+    margin-top: 15px;
+}
+
+.company-info h2 {
+    color: #34495e;
+    margin: 5px 0;
+    font-size: 24px;
+}
+
+.company-info p {
+    margin: 2px 0;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+.section h3 {
+    color: #2980b9;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
     display: flex;
     justify-content: space-between;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.payslip-column {
-    width: 48%;
+.label {
+    font-weight: bold;
+    color: #34495e;
 }
 
-.payslip-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
+.value {
+    color: #2c3e50;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+th {
+    background-color: #3498db;
+    color: #ffffff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.total {
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+
+.net-pay {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 30px;
+    color: #27ae60;
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.payslip-footer {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.action-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.action-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.action-button:active {
+    transform: translateY(0);
 }
 
 @media (max-width: 600px) {
     .dashboard {
-        padding: 10px;
+        padding: 20px;
     }
 
-    .payslip-body {
-        flex-direction: column;
+    .info-grid {
+        grid-template-columns: 1fr;
     }
 
-    .payslip-column {
+    .action-button {
         width: 100%;
+        margin: 10px 0;
     }
 }
