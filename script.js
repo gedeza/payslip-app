@@ -1,29 +1,34 @@
-document.addEventListener('DOMContentLoaded', function() {
+// @ts-check
+import jsPDF from 'jspdf';
+
+document.addEventListener('DOMContentLoaded', () => {
     const generatePayslipButton = document.getElementById('generate-payslip');
-    generatePayslipButton.addEventListener('click', generatePayslip);
+    if (generatePayslipButton) {
+        generatePayslipButton.addEventListener('click', generatePayslip);
+    }
 
     function generatePayslip() {
         console.log("Generate Payslip button clicked"); // Debugging line
 
         // Get input values
-        const companyName = document.getElementById('company-name').value;
-        const companyAddress = document.getElementById('company-address').value;
-        const companyContact = document.getElementById('company-contact').value;
-        const employeeName = document.getElementById('employee-name').value;
-        const idNumber = document.getElementById('id-number').value;
-        const jobTitle = document.getElementById('job-title').value;
-        const bankName = document.getElementById('bank-name').value;
-        const accountNo = document.getElementById('account-no').value;
-        const payPeriod = document.getElementById('pay-period').value;
-        const payDate = document.getElementById('pay-date').value;
-        const normalHours = parseFloat(document.getElementById('normal-hours').value);
-        const overtimeHours = parseFloat(document.getElementById('overtime-hours').value);
-        const normalRate = parseFloat(document.getElementById('normal-rate').value);
-        const overtimeRate = parseFloat(document.getElementById('overtime-rate').value);
-        const uifEnabled = document.getElementById('uif-enabled').checked;
-        const payeEnabled = document.getElementById('paye-enabled').checked;
-        const loans = parseFloat(document.getElementById('loans').value) || 0;
-        const advances = parseFloat(document.getElementById('advances').value) || 0;
+        const companyName = getInputValue('company-name');
+        const companyAddress = getInputValue('company-address');
+        const companyContact = getInputValue('company-contact');
+        const employeeName = getInputValue('employee-name');
+        const idNumber = getInputValue('id-number');
+        const jobTitle = getInputValue('job-title');
+        const bankName = getInputValue('bank-name');
+        const accountNo = getInputValue('account-no');
+        const payPeriod = getInputValue('pay-period');
+        const payDate = getInputValue('pay-date');
+        const normalHours = getFloatValue('normal-hours');
+        const overtimeHours = getFloatValue('overtime-hours');
+        const normalRate = getFloatValue('normal-rate');
+        const overtimeRate = getFloatValue('overtime-rate');
+        const uifEnabled = getCheckboxValue('uif-enabled');
+        const payeEnabled = getCheckboxValue('paye-enabled');
+        const loans = getFloatValue('loans') || 0;
+        const advances = getFloatValue('advances') || 0;
 
         // Validation checks
         if (!validateInputs(idNumber, accountNo, normalHours, overtimeHours, normalRate, overtimeRate)) {
@@ -145,5 +150,20 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             return 248564 + (annualIncome - 1000000) * 0.39;
         }
+    }
+
+    // Helper functions
+    function getInputValue(id) {
+        const element = document.getElementById(id);
+        return element instanceof HTMLInputElement ? element.value : '';
+    }
+
+    function getFloatValue(id) {
+        return parseFloat(getInputValue(id));
+    }
+
+    function getCheckboxValue(id) {
+        const element = document.getElementById(id);
+        return element instanceof HTMLInputElement ? element.checked : false;
     }
 });

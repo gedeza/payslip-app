@@ -18,10 +18,13 @@ export function getAgeFromIDNumber(idNumber: string): number {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(amount);
+  const absAmount = Math.abs(amount);
+  const wholeNumber = Math.floor(absAmount);
+  const decimal = Math.round((absAmount - wholeNumber) * 100);
+  
+  const formattedWhole = wholeNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  const formattedDecimal = decimal.toString().padStart(2, '0');
+  
+  const result = `R ${formattedWhole},${formattedDecimal}`;
+  return amount < 0 ? `-${result}` : result;
 }

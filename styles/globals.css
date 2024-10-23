@@ -92,16 +92,17 @@
     position: absolute;
     left: 0;
     top: 0;
+    width: 100%;
   }
-  
-  /* Add these new rules to remove header and footer */
+  .no-print {
+    display: none;
+  }
   @page {
     margin: 0;
   }
   body {
     margin: 1.6cm;
   }
-  /* Hide header and footer */
   head, header, footer {
     display: none !important;
   }

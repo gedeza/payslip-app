@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { UserOptions } from 'jspdf-autotable';
+import { formatCurrency } from './utils';
 
 interface PayslipData {
   companyName: string;
@@ -9,6 +9,8 @@ interface PayslipData {
   employeeName: string;
   payPeriod: string;
   payDate: string;
+  bankName: string;
+  accountNo: string;
   normalHours: number;
   overtimeHours: number;
   normalPay: number;
@@ -18,72 +20,84 @@ interface PayslipData {
   payeDeduction: number;
   totalDeductions: number;
   netPay: number;
+  loans: number;
+  advances: number;
+  additionalDeduction1: number;
+  additionalDeduction2: number;
+  companyEmail: string;
 }
 
-export const generatePDF = (data: PayslipData, fileName: string) => {
-  const pdf = new jsPDF();
+interface AutoTableOptions {
+  startY: number;
+  head: string[][];
+  body: (string | number)[][];
+}
 
-  // Set font
-  pdf.setFont("helvetica");
+interface JsPDFWithAutoTable extends jsPDF {
+  autoTable: (options: AutoTableOptions) => void;
+  lastAutoTable: {
+    finalY: number;
+  };
+}
 
-  // Add company details
-  pdf.setFontSize(18);
-  pdf.text("Payslip", 105, 15, { align: "center" });
-  pdf.setFontSize(12);
-  pdf.text(data.companyName, 20, 30);
-  pdf.text(data.companyAddress, 20, 37);
-  pdf.text(`Contact: ${data.companyContact}`, 20, 44);
+export const generatePDF = (data: PayslipData, filename: string): void => {
+  try {
+    const doc = new jsPDF() as JsPDFWithAutoTable;
 
-  // Add employee details
-  pdf.setFontSize(14);
-  pdf.text("Employee Details", 20, 60);
-  pdf.setFontSize(10);
-  pdf.text(`Name: ${data.employeeName}`, 20, 70);
-  pdf.text(`Pay Period: ${data.payPeriod}`, 20, 77);
-  pdf.text(`Pay Date: ${data.payDate}`, 20, 84);
+    // Add company details
+    doc.setFontSize(20);
+    doc.text(data.companyName, 105, 15, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text(data.companyAddress, 105, 22, { align: 'center' });
+    doc.text(`Contact: ${data.companyContact}`, 105, 27, { align: 'center' });
+    doc.text(`Email: ${data.companyEmail}`, 105, 32, { align: 'center' });
 
-  // Add earnings table
-  pdf.setFontSize(14);
-  pdf.text("Earnings", 20, 100);
-  pdf.setFontSize(10);
-  const earningsBody = [
-    ["Description", "Hours", "Rate", "Amount"],
-    ["Normal Pay", data.normalHours.toString(), (data.normalPay / data.normalHours).toFixed(2), data.normalPay.toFixed(2)],
-    ["Overtime Pay", data.overtimeHours.toString(), (data.overtimePay / data.overtimeHours).toFixed(2), data.overtimePay.toFixed(2)],
-    ["Gross Pay", "", "", data.grossPay.toFixed(2)]
-  ];
-  (pdf as any).autoTable({
-    startY: 105,
-    head: [earningsBody[0]],
-    body: earningsBody.slice(1),
-    theme: 'grid',
-    headStyles: { fillColor: [100, 100, 100] }
-  } as UserOptions);
+    // Add payslip title
+    doc.setFontSize(16);
+    doc.text('PAYSLIP', 105, 40, { align: 'center' });
 
-  // Add deductions table
-  pdf.setFontSize(14);
-  pdf.text("Deductions", 20, pdf.lastAutoTable.finalY + 20);
-  pdf.setFontSize(10);
-  const deductionsBody = [
-    ["Description", "Amount"],
-    ["UIF Deduction", data.uifDeduction.toFixed(2)],
-    ["PAYE", data.payeDeduction.toFixed(2)],
-    ["Total Deductions", data.totalDeductions.toFixed(2)]
-  ];
-  (pdf as any).autoTable({
-    startY: (pdf as any).lastAutoTable.finalY + 25,
-    head: [deductionsBody[0]],
-    body: deductionsBody.slice(1),
-    theme: 'grid',
-    headStyles: { fillColor: [100, 100, 100] }
-  } as UserOptions);
+    // Add employee details
+    doc.setFontSize(10);
+    doc.text(`Employee: ${data.employeeName}`, 20, 50);
+    doc.text(`Pay Period: ${data.payPeriod}`, 20, 55);
+    doc.text(`Pay Date: ${data.payDate}`, 20, 60);
+    doc.text(`Bank Name: ${data.bankName}`, 120, 50);
+    doc.text(`Account Number: ${data.accountNo}`, 120, 55);
 
-  // Add net pay
-  pdf.setFontSize(14);
-  pdf.text("Net Pay", 20, pdf.lastAutoTable.finalY + 20);
-  pdf.setFontSize(16);
-  pdf.text(`R ${data.netPay.toFixed(2)}`, 20, pdf.lastAutoTable.finalY + 30);
+    // Add earnings table
+    doc.autoTable({
+      startY: 70,
+      head: [['Earnings', 'Hours', 'Rate', 'Amount']],
+      body: [
+        ['Normal Pay', data.normalHours, formatCurrency(data.normalPay / data.normalHours), formatCurrency(data.normalPay)],
+        ['Overtime Pay', data.overtimeHours, formatCurrency(data.overtimePay / data.overtimeHours), formatCurrency(data.overtimePay)],
+        ['Advances', '', '', formatCurrency(data.advances)],
+        ['Gross Pay', '', '', formatCurrency(data.grossPay)],
+      ],
+    });
 
-  // Save the PDF
-  pdf.save(fileName);
+    // Add deductions table
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      head: [['Deductions', 'Amount']],
+      body: [
+        ['UIF', formatCurrency(data.uifDeduction)],
+        ['PAYE', formatCurrency(data.payeDeduction)],
+        ['Loans', formatCurrency(data.loans)],
+        ...(data.additionalDeduction1 > 0 ? [['Additional Deduction 1', formatCurrency(data.additionalDeduction1)]] : []),
+        ...(data.additionalDeduction2 > 0 ? [['Additional Deduction 2', formatCurrency(data.additionalDeduction2)]] : []),
+        ['Total Deductions', formatCurrency(data.totalDeductions)],
+      ],
+    });
+
+    // Add net pay
+    doc.setFontSize(12);
+    doc.text(`Net Pay: ${formatCurrency(data.netPay)}`, 20, doc.lastAutoTable.finalY + 20);
+
+    // Save the PDF
+    doc.save(filename);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('An error occurred while generating the PDF. Please try again.');
+  }
 };
