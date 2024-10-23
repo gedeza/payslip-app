@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from 'next/router';
 import { supabase } from '@/lib/supabaseClient';
 
-export default function AuthPage() {
+const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +15,6 @@ export default function AuthPage() {
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session); // Debugging line
       if (event === 'SIGNED_IN') {
         router.push('/');
       }
@@ -38,9 +37,7 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     setError('');
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
     if (error) setError(error.message);
     setLoading(false);
   };
@@ -100,4 +97,6 @@ export default function AuthPage() {
       </Card>
     </div>
   );
-}
+};
+
+export default AuthPage;
